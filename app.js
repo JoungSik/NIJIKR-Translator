@@ -1,10 +1,12 @@
-require("dotenv").config();
+import { translate } from "./papago.js";
+import dotenv from "dotenv";
+import request from "request";
+import Discord from "discord.js";
+import emojiUnicode from "emoji-unicode";
 
-var express = require("express");
-var app = express();
+var detect_api_url ="https://openapi.naver.com/v1/papago/detectLangs";
 
-const Discord = require("discord.js");
-const client = new Discord.Client();
+const client = new Discord.Client({ partials: ['MESSAGE', 'CHANNEL', 'REACTION'] });
 
 client.once("ready", () => {
   console.log("Ready!");
@@ -15,12 +17,64 @@ client.on("message", (message) => {
   if (message.content === "!ping") {
     message.channel.send("Pong.");
   }
+
+  if (message.react === ":flag_kr:"){
+    message.channel.send("KOR");
+  }
+});
+
+client.on('messageReactionAdd', async (reaction, user) => {
+	if (reaction.partial) {
+		try {
+			await reaction.fetch();
+		} catch (error) {
+			console.error('Something went wrong when fetching the message: ', error);
+			return;
+		}
+  }
+  if (emojiUnicode(reaction.emoji.name)=== "1f1f0 1f1f7"){ //한국어
+    //reaction.message.channel.send("KOR");
+    var query = reaction.message.content;
+    console.log(query);
+    var options = {
+      url: detect_api_url,
+      form: {'query': query},
+      headers: {'X-Naver-Client-Id':process.env.NAVER_CLIENT_ID, 'X-Naver-Client-Secret': process.env.NAVER_CLIENT_SECRET}
+    };
+    request.post(options, function (error, response, body) {
+      console.log(JSON.parse(body).langCode);
+      // if (!error && response.statusCode == 200) {
+      //   res.writeHead(200, {'Content-Type': 'text/json;charset=utf-8'});
+      //   res.end(body);
+      // } else {
+      //   res.status(response.statusCode).end();
+      //   console.log('error = ' + response.statusCode);
+      // }
+    });
+
+  }
+  
+  if (emojiUnicode(reaction.emoji.name)=== "1f1ef 1f1f5"){ //일본어
+    reaction.message.channel.send("JP");
+    var query = reaction.message.content;
+  }
+  
+  if (emojiUnicode(reaction.emoji.name)=== "1f1fa 1f1f8"){ //영어
+    reaction.message.channel.send("ENG");
+    var query = reaction.message.content;
+  }
+
+  //console.log(`${reaction.codePointAt(0).toString(16)}'`);
+  //console.log(`${reaction.emoji.toString()}'`);
+  //console.log(emojiUnicode("📻"));
+  console.log(emojiUnicode(reaction.emoji.name));
+	console.log(`${reaction.message.author}'s message "${reaction.message.content}" gained a reaction!`);
+	console.log(`${reaction.count} user(s) have given the same reaction to this message!`);
 });
 
 client.login(process.env.TOKEN);
 
-// var client_id = "";
-// var client_secret = "";
+
 // var query = "번역할 문장을 입력하세요.";
 
 // app.get("/translate", function (req, res) {
