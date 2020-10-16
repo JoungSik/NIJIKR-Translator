@@ -21,7 +21,21 @@ const translate = ({ source, target, query }) =>
     }
   );
 
-var detect_api_url = "https://openapi.naver.com/v1/papago/detectLangs";
+const getLangCode = ({ query }) =>
+  axios.post(
+    "https://openapi.naver.com/v1/papago/detectLangs",
+    {
+      query: query
+    },
+    {
+      headers: {
+        "X-Naver-Client-Id": process.env.NAVER_CLIENT_ID,
+        "X-Naver-Client-Secret": process.env.NAVER_CLIENT_SECRET,
+      },
+    }
+  );
+
+
 
 const client = new Discord.Client({
   partials: ["MESSAGE", "CHANNEL", "REACTION"],
@@ -32,7 +46,7 @@ client.once("ready", () => {
 });
 
 client.on("message", (message) => {
-  console.log(message.content);
+  // console.log(message.content);
   if (message.content === "!ping") {
     message.channel.send("Pong.");
   }
@@ -55,64 +69,77 @@ client.on("messageReactionAdd", async (reaction, user) => {
     // 한국어
     // reaction.message.channel.send("KOR");
     var query = reaction.message.content;
-    // var langCode = getLangCode(query);
-    translate({ source: "en", target: "ko", query: query })
+    getLangCode({query: query})
       .then((response) => {
-        reaction.message.channel.send(
-          response.data.message.result.translatedText
-        );
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+        console.log(response.data.langCode);
+        translate({ source: response.data.langCode, target: "ko", query: query })
+        .then((response) => {
+          reaction.message.channel.send(
+            response.data.message.result.translatedText
+          );
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    })
+    .catch(err => {
+      console.log(err);
+    })
   }
 
   if (emojiUnicode(reaction.emoji.name) === "1f1ef 1f1f5") {
     //일본어
-    reaction.message.channel.send("JP");
     var query = reaction.message.content;
-    var langCode = getLangCode(query);
-    translate(langCode, "JP", query);
+    getLangCode({query: query})
+      .then((response) => {
+        console.log(response.data.langCode);
+        translate({ source: response.data.langCode, target: "ja", query: query })
+        .then((response) => {
+          reaction.message.channel.send(
+            response.data.message.result.translatedText
+          );
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    })
+    .catch(err => {
+      console.log(err);
+    })
   }
 
   if (emojiUnicode(reaction.emoji.name) === "1f1fa 1f1f8") {
     //영어
-    reaction.message.channel.send("ENG");
     var query = reaction.message.content;
-    var langCode = getLangCode(query);
-    translate(langCode, "en", query);
+    getLangCode({query: query})
+      .then((response) => {
+        console.log(response.data.langCode);
+        translate({ source: response.data.langCode, target: "en", query: query })
+        .then((response) => {
+          reaction.message.channel.send(
+            response.data.message.result.translatedText
+          );
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    })
+    .catch(err => {
+      console.log(err);
+    })
   }
 
   //console.log(`${reaction.codePointAt(0).toString(16)}'`);
   //console.log(`${reaction.emoji.toString()}'`);
   //console.log(emojiUnicode("📻"));
-  console.log(emojiUnicode(reaction.emoji.name));
-  console.log(
-    `${reaction.message.author}'s message "${reaction.message.content}" gained a reaction!`
-  );
-  console.log(
-    `${reaction.count} user(s) have given the same reaction to this message!`
-  );
+  // console.log(emojiUnicode(reaction.emoji.name));
+  // console.log(
+  //   `${reaction.message.author}'s message "${reaction.message.content}" gained a reaction!`
+  // );
+  // console.log(
+  //   `${reaction.count} user(s) have given the same reaction to this message!`
+  // );
 });
-
-function getLangCode(query) {
-  var langCode = "";
-  console.log(query);
-  var options = {
-    url: detect_api_url,
-    form: { query: query },
-    headers: {
-      "X-Naver-Client-Id": process.env.NAVER_CLIENT_ID,
-      "X-Naver-Client-Secret": process.env.NAVER_CLIENT_SECRET,
-    },
-  };
-  request.post(options, function (error, response, body) {
-    console.log(JSON.parse(body).langCode);
-    langCode = JSON.parse(body).langCode;
-  });
-
-  return langCode;
-}
 
 client.login(process.env.TOKEN);
 
