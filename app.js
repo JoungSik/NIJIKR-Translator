@@ -1,4 +1,4 @@
-import { translate } from "./papago.js";
+//import translate from "./papago.js";
 import dotenv from "dotenv";
 import request from "request";
 import Discord from "discord.js";
@@ -35,33 +35,19 @@ client.on('messageReactionAdd', async (reaction, user) => {
   if (emojiUnicode(reaction.emoji.name)=== "1f1f0 1f1f7"){ //한국어
     //reaction.message.channel.send("KOR");
     var query = reaction.message.content;
-    console.log(query);
-    var options = {
-      url: detect_api_url,
-      form: {'query': query},
-      headers: {'X-Naver-Client-Id':process.env.NAVER_CLIENT_ID, 'X-Naver-Client-Secret': process.env.NAVER_CLIENT_SECRET}
-    };
-    request.post(options, function (error, response, body) {
-      console.log(JSON.parse(body).langCode);
-      // if (!error && response.statusCode == 200) {
-      //   res.writeHead(200, {'Content-Type': 'text/json;charset=utf-8'});
-      //   res.end(body);
-      // } else {
-      //   res.status(response.statusCode).end();
-      //   console.log('error = ' + response.statusCode);
-      // }
-    });
-
-  }
+    var langCode = getLangCode(query);
+    }
   
   if (emojiUnicode(reaction.emoji.name)=== "1f1ef 1f1f5"){ //일본어
-    reaction.message.channel.send("JP");
+    //reaction.message.channel.send("JP");
     var query = reaction.message.content;
+    var langCode = getLangCode(query);
   }
   
   if (emojiUnicode(reaction.emoji.name)=== "1f1fa 1f1f8"){ //영어
-    reaction.message.channel.send("ENG");
+    //reaction.message.channel.send("ENG");
     var query = reaction.message.content;
+    var langCode = getLangCode(query);
   }
 
   //console.log(`${reaction.codePointAt(0).toString(16)}'`);
@@ -74,7 +60,21 @@ client.on('messageReactionAdd', async (reaction, user) => {
 
 client.login(process.env.TOKEN);
 
+function getLangCode(query){
+  var langCode ="";
+  console.log(query);
+    var options = {
+      url: detect_api_url,
+      form: {'query': query},
+      headers: {'X-Naver-Client-Id':process.env.NAVER_CLIENT_ID, 'X-Naver-Client-Secret': process.env.NAVER_CLIENT_SECRET}
+    };
+    request.post(options, function (error, response, body) {
+      console.log(JSON.parse(body).langCode);
+      langCode = JSON.parse(body).langCode;
+    });
 
+    return langCode;
+}
 // var query = "번역할 문장을 입력하세요.";
 
 // app.get("/translate", function (req, res) {
