@@ -54,37 +54,24 @@ client.on("messageReactionAdd", async (reaction, user) => {
     //한국어
     //reaction.message.channel.send("KOR");
     var query = reaction.message.content;
-    console.log(query);
-    var options = {
-      url: detect_api_url,
-      form: { query: query },
-      headers: {
-        "X-Naver-Client-Id": process.env.NAVER_CLIENT_ID,
-        "X-Naver-Client-Secret": process.env.NAVER_CLIENT_SECRET,
-      },
-    };
-    request.post(options, function (error, response, body) {
-      console.log(JSON.parse(body).langCode);
-      // if (!error && response.statusCode == 200) {
-      //   res.writeHead(200, {'Content-Type': 'text/json;charset=utf-8'});
-      //   res.end(body);
-      // } else {
-      //   res.status(response.statusCode).end();
-      //   console.log('error = ' + response.statusCode);
-      // }
-    });
+    var langCode = getLangCode(query);
+    translate(langCode,"ko",query);
   }
 
   if (emojiUnicode(reaction.emoji.name) === "1f1ef 1f1f5") {
     //일본어
     reaction.message.channel.send("JP");
     var query = reaction.message.content;
+    var langCode = getLangCode(query);
+    translate(langCode,"JP",query);
   }
 
   if (emojiUnicode(reaction.emoji.name) === "1f1fa 1f1f8") {
     //영어
     reaction.message.channel.send("ENG");
     var query = reaction.message.content;
+    var langCode = getLangCode(query);
+    translate(langCode,"en",query);
   }
 
   //console.log(`${reaction.codePointAt(0).toString(16)}'`);
@@ -98,6 +85,23 @@ client.on("messageReactionAdd", async (reaction, user) => {
     `${reaction.count} user(s) have given the same reaction to this message!`
   );
 });
+
+function getLangCode(query){
+  var langCode ="";
+  console.log(query);
+    var options = {
+      url: detect_api_url,
+      form: {'query': query},
+      headers: {'X-Naver-Client-Id':process.env.NAVER_CLIENT_ID, 'X-Naver-Client-Secret': process.env.NAVER_CLIENT_SECRET}
+    };
+    request.post(options, function (error, response, body) {
+      console.log(JSON.parse(body).langCode);
+      langCode = JSON.parse(body).langCode;
+    });
+
+    return langCode;
+}
+
 
 client.login(process.env.TOKEN);
 
