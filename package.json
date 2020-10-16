@@ -2,18 +2,19 @@
   "name": "nijikr-transrator",
   "version": "1.0.0",
   "description": "NIJIKR Transrator",
-  "main": "app.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
   "author": "sosgur82 <sosgur82@gmail.com>",
   "license": "MIT",
+  "private": false,
   "dependencies": {
     "axios": "^0.20.0",
     "discord.js": "^12.3.1",
-    "dotenv": "^8.2.0",
     "emoji-unicode": "^2.0.1",
-    "express": "^4.17.1",
     "request": "^2.88.2"
+  },
+  "scripts": {
+    "start": "node src/app.js"
+  },
+  "devDependencies": {
+    "dotenv": "^8.2.0"
   }
 }
