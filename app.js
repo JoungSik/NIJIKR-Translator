@@ -1,5 +1,7 @@
 var express = require('express');
 var app = express();
+var client_id = '';
+var client_secret = '';
 var query = "번역할 문장을 입력하세요.";
 app.get('/translate', function (req, res) {
    var api_url = 'https://openapi.naver.com/v1/papago/n2mt';
