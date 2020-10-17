@@ -74,9 +74,8 @@ client.on("messageReactionAdd", async (reaction, user) => {
         console.log(response.data.langCode);
         translate({ source: response.data.langCode, target: "ko", query: query })
         .then((response) => {
-          reaction.message.channel.send(
-            response.data.message.result.translatedText
-          );
+          reaction.message.channel.send(query);
+          reaction.message.channel.send(">>> " + response.data.message.result.translatedText);
         })
         .catch((err) => {
           console.log(err);
@@ -95,9 +94,8 @@ client.on("messageReactionAdd", async (reaction, user) => {
         console.log(response.data.langCode);
         translate({ source: response.data.langCode, target: "ja", query: query })
         .then((response) => {
-          reaction.message.channel.send(
-            response.data.message.result.translatedText
-          );
+          reaction.message.channel.send(query);
+          reaction.message.channel.send(">>> " + response.data.message.result.translatedText);
         })
         .catch((err) => {
           console.log(err);
@@ -116,9 +114,8 @@ client.on("messageReactionAdd", async (reaction, user) => {
         console.log(response.data.langCode);
         translate({ source: response.data.langCode, target: "en", query: query })
         .then((response) => {
-          reaction.message.channel.send(
-            response.data.message.result.translatedText
-          );
+          reaction.message.channel.send(query);
+          reaction.message.channel.send(">>> " + response.data.message.result.translatedText);
         })
         .catch((err) => {
           console.log(err);
