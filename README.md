@@ -1,4 +1,3 @@
-![GitHub](https://img.shields.io/github/license/JoungSik/NIJIKR-Translator)
 ![GitHub contributors](https://img.shields.io/github/contributors/JoungSik/NIJIKR-Translator)
 ![GitHub last commit](https://img.shields.io/github/last-commit/JoungSik/NIJIKR-Translator)
 ![GitHub forks](https://img.shields.io/github/forks/JoungSik/NIJIKR-Translator?style=social)
