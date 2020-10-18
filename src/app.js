@@ -35,6 +35,29 @@ const getLangCode = ({ query }) =>
     }
   );
 
+const sendMessage = ({ reaction, query, target }) => {
+  getLangCode({ query: query })
+    .then((response) => {
+      translate({
+        source: response.data.langCode,
+        target: target,
+        query: query,
+      })
+        .then((response) => {
+          reaction.message.channel.send(query);
+          reaction.message.channel.send(
+            ">>> " + response.data.message.result.translatedText
+          );
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+};
+
 const client = new Discord.Client({
   partials: ["MESSAGE", "CHANNEL", "REACTION"],
 });
@@ -56,76 +79,19 @@ client.on("messageReactionAdd", async (reaction, user) => {
   // 한국어
   if (emojiUnicode(reaction.emoji.name) === "1f1f0 1f1f7") {
     const query = reaction.message.content.replace(/\@\S+ /g, "");
-    getLangCode({ query: query })
-      .then((response) => {
-        translate({
-          source: response.data.langCode,
-          target: "ko",
-          query: query,
-        })
-          .then((response) => {
-            reaction.message.channel.send(query);
-            reaction.message.channel.send(
-              ">>> " + response.data.message.result.translatedText
-            );
-          })
-          .catch((err) => {
-            console.log(err);
-          });
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+    sendMessage({ reaction: reaction, query: query, target: "ko" });
   }
 
   // 일본어
   if (emojiUnicode(reaction.emoji.name) === "1f1ef 1f1f5") {
     const query = reaction.message.content.replace(/\@\S+ /g, "");
-    getLangCode({ query: query })
-      .then((response) => {
-        translate({
-          source: response.data.langCode,
-          target: "ja",
-          query: query,
-        })
-          .then((response) => {
-            reaction.message.channel.send(query);
-            reaction.message.channel.send(
-              ">>> " + response.data.message.result.translatedText
-            );
-          })
-          .catch((err) => {
-            console.log(err);
-          });
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+    sendMessage({ reaction: reaction, query: query, target: "ja" });
   }
 
   // 영어
   if (emojiUnicode(reaction.emoji.name) === "1f1fa 1f1f8") {
     const query = reaction.message.content.replace(/\@\S+ /g, "");
-    getLangCode({ query: query })
-      .then((response) => {
-        translate({
-          source: response.data.langCode,
-          target: "en",
-          query: query,
-        })
-          .then((response) => {
-            reaction.message.channel.send(query);
-            reaction.message.channel.send(
-              ">>> " + response.data.message.result.translatedText
-            );
-          })
-          .catch((err) => {
-            console.log(err);
-          });
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+    sendMessage({ reaction: reaction, query: query, target: "en" });
   }
 });
 
