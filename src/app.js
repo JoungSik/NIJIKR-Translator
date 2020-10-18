@@ -5,6 +5,8 @@ const emojiUnicode = require("emoji-unicode");
 
 const axios = require("axios");
 
+const regex = /\@\S+\s+|\<\@\S+\s+/g;
+
 const translate = ({ source, target, query }) =>
   axios.post(
     "https://openapi.naver.com/v1/papago/n2mt",
@@ -81,19 +83,19 @@ client.on("messageReactionAdd", async (reaction, user) => {
 
   // 한국어
   if (emojiUnicode(reaction.emoji.name) === "1f1f0 1f1f7") {
-    const query = reaction.message.content.replace(/\@\S+ /g, "");
+    const query = reaction.message.content.replace(regex, "");
     sendMessage({ reaction: reaction, query: query, target: "ko" });
   }
 
   // 일본어
   if (emojiUnicode(reaction.emoji.name) === "1f1ef 1f1f5") {
-    const query = reaction.message.content.replace(/\@\S+ /g, "");
+    const query = reaction.message.content.replace(regex, "");
     sendMessage({ reaction: reaction, query: query, target: "ja" });
   }
 
   // 영어
   if (emojiUnicode(reaction.emoji.name) === "1f1fa 1f1f8") {
-    const query = reaction.message.content.replace(/\@\S+ /g, "");
+    const query = reaction.message.content.replace(regex, "");
     sendMessage({ reaction: reaction, query: query, target: "en" });
   }
 });
