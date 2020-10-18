@@ -50,7 +50,10 @@ const sendMessage = ({ reaction, query, target }) => {
           );
         })
         .catch((err) => {
-          console.log(err);
+          reaction.message.channel.send(query);
+          reaction.message.channel.send(
+            ">>> " + err.response.data.errorMessage
+          );
         });
     })
     .catch((err) => {
