@@ -7,6 +7,10 @@ const axios = require("axios");
 
 const regex = /\@\S+\s+|\<\@\S+\s+/g;
 
+const EN = "";
+const JP = "";
+const KR = "";
+
 const translate = ({ source, target, query }) =>
   axios.post(
     "https://openapi.naver.com/v1/papago/n2mt",
@@ -20,7 +24,7 @@ const translate = ({ source, target, query }) =>
         "X-Naver-Client-Id": process.env.NAVER_CLIENT_ID,
         "X-Naver-Client-Secret": process.env.NAVER_CLIENT_SECRET,
       },
-    }
+    },
   );
 
 const getLangCode = ({ query }) =>
@@ -34,7 +38,7 @@ const getLangCode = ({ query }) =>
         "X-Naver-Client-Id": process.env.NAVER_CLIENT_ID,
         "X-Naver-Client-Secret": process.env.NAVER_CLIENT_SECRET,
       },
-    }
+    },
   );
 
 const sendMessage = ({ reaction, query, target }) => {
@@ -48,13 +52,13 @@ const sendMessage = ({ reaction, query, target }) => {
         .then((response) => {
           reaction.message.channel.send(query);
           reaction.message.channel.send(
-            ">>> " + response.data.message.result.translatedText
+            ">>> " + response.data.message.result.translatedText,
           );
         })
         .catch((err) => {
           reaction.message.channel.send(query);
           reaction.message.channel.send(
-            ">>> " + err.response.data.errorMessage
+            ">>> " + err.response.data.errorMessage,
           );
         });
     })
